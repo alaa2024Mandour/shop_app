@@ -4,6 +4,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/shared/comonents/components.dart';
 
 import '../../shared/style/colors.dart';
 import '../models/categoriesMode/categories_model.dart';
@@ -18,7 +19,15 @@ class ProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit,ShopStates>(
-      listener: (context,status){},
+      listener: (context,state){
+        if(state is ShopSuccessChangeFavoritesState){
+          if (!state.Model.status){
+            showToast(msg: state.Model.message, state: ToastStates.ERROR);
+          }else{
+            showToast(msg: state.Model.message, state: ToastStates.SUCCESS);
+          }
+        }
+      },
       builder: (context,status) {
         return
           ConditionalBuilder(
@@ -198,6 +207,7 @@ class ProductsScreen extends StatelessWidget {
                   Spacer(),
                   IconButton(
                       onPressed: (){
+                        ShopCubit.get(context).chandeFavorites(model.id);
                         print(model.id);
                       },
                       icon: CircleAvatar(

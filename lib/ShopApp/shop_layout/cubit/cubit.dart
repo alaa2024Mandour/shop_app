@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/ShopApp/models/change_favorites_model/change_favorites_model.dart';
 import 'package:shop_app/ShopApp/shop_layout/cubit/states.dart';
 
 
@@ -11,6 +12,7 @@ import '../../Categories/categories_screan.dart';
 import '../../Favorites/favoriets_screen.dart';
 import '../../Products/products_screen.dart';
 import '../../models/categoriesMode/categories_model.dart';
+import '../../models/fav_model/fav_model.dart';
 import '../../models/homeModel/home_model.dart';
 import '../../settings/settings_screen.dart';
 
@@ -55,6 +57,7 @@ class ShopCubit extends Cubit<ShopStates>
           element.id:element.inFavorites,
         });
       });
+
       print(favorites.toString());
       emit(ShopSuccessHomeDataState());
 
@@ -83,7 +86,56 @@ class ShopCubit extends Cubit<ShopStates>
   }
 
 
-  void chandeFavorites(){
-    
+  ChangeFavModels? changeFavoritesModel;
+
+  void chandeFavorites(int productId){
+    favorites[productId]=!favorites[productId]!;
+
+    emit(ShopChangeFavoritesState());
+
+    DioHelper.postData(
+        url: FAVORITES,
+        data: {
+          'product_id':productId
+        },
+      token: token,
+    ).then((value) {
+      changeFavoritesModel = ChangeFavModels.fromJason(value.data);
+      print(value.data);
+
+      if(!changeFavoritesModel!.status){
+        favorites[productId]=!favorites[productId]!;
+      }else{
+        getFav();
+      }
+
+        emit(ShopSuccessChangeFavoritesState(changeFavoritesModel!));
+    }).catchError((onError){
+      favorites[productId]=!favorites[productId]!;
+        emit(ShopErrorChangeFavoritesState());
+    });
+  }
+
+
+  FavoritesModel? favModels ;
+
+  void getFav(){
+
+    emit(ShopLoadingGetFavoritesState());
+    DioHelper.getData(
+        url: FAVORITES,
+        token:token
+    ).then((value){
+
+      favModels = FavoritesModel.fromJson(value.data);
+
+      printFullText(value.data.toString());
+
+      emit(ShopSuccessGetFavoritesState());
+
+    }).catchError((onError){
+      print(onError.toString());
+      emit(ShopErrorGetFavoritesState());
+    });
   }
 }

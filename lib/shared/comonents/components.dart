@@ -102,110 +102,10 @@ Widget defaultTextFormField({
     );
 
 /*=================================================*/
-//Tasks Items in todoApp
-/*=================================================*/
 
-Widget buildTaskItem(Map model, context) => Dismissible(
-      key: Key(model['id'].toString()),
-      onDismissed: (Direction) {
-        AppCubit.get(context).deletDatabase(id: model['id']);
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              child: Text(
-                "${model['time']}",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              radius: 40,
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "${model['title']}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                  Text(
-                    "${model['date']}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17,
-                        color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 25,
-            ),
-            IconButton(
-              onPressed: () {
-                AppCubit.get(context).UpdateDatabase(
-                  status: 'done',
-                  id: model['id'],
-                );
-              },
-              icon: Icon(Icons.check_box),
-              color: Colors.green,
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            IconButton(
-              onPressed: () {
-                AppCubit.get(context).UpdateDatabase(
-                  status: 'archive',
-                  id: model['id'],
-                );
-              },
-              icon: Icon(Icons.archive),
-              color: Colors.black45,
-            )
-          ],
-        ),
-      ),
-    );
 
 class AppCubit {
   static get(context) {}
-}
-
-Widget TaskConditionItmeBulder({
-  required List<Map> tasks,
-}) {
-  return ConditionalBuilder(
-    condition: tasks.length > 0,
-    builder: (context) => ListView.separated(
-        itemBuilder: (context, index) =>
-            buildTaskItem(tasks[index], context), //
-        separatorBuilder: (context, index) => myDivider(),
-        itemCount: tasks.length),
-    fallback: (BuildContext context) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.menu,
-              color: Colors.grey,
-              size: 55,
-            ),
-            Text(
-              "There Is No Tasks Yet",
-              style: TextStyle(fontSize: 25, color: Colors.black45),
-            )
-          ],
-        ),
-      );
-    },
-  );
 }
 
 Widget myDivider() => Padding(
@@ -218,66 +118,6 @@ Widget myDivider() => Padding(
     );
 
 //=====================================================
-//==========News App ==================================
-Widget buildArticleItem(article, context) => Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Row(
-        children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                image: DecorationImage(
-                    image: NetworkImage('${article['urlToImage']}'),
-                    fit: BoxFit.cover)),
-          ),
-          SizedBox(
-            width: 15,
-          ),
-          Expanded(
-            child: Container(
-              height: 120,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: Text(
-                      '${article['title']}',
-                      style: Theme.of(context).textTheme.bodyText1,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Text(
-                    '${article['publishedAt']}',
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black45),
-                  )
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-
-//======================================
-Widget articleBulder(list, context, {isSearch = false}) => ConditionalBuilder(
-    condition: list.length > 0,
-    builder: (context) => ListView.separated(
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index) => buildArticleItem(list[index], context),
-        separatorBuilder: (context, index) => myDivider(),
-        itemCount: 10),
-    fallback: (context) =>
-        isSearch ? Container() : Center(child: CircularProgressIndicator()));
-
-//==================================================
 void navigateTo(context, widget) => Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => widget),
