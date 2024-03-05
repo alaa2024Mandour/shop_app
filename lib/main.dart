@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/shared/blocObserver.dart';
+import 'package:shop_app/shared/comonents/constants.dart';
 import 'package:shop_app/shared/network/local/cachHelper.dart';
 import 'package:shop_app/shared/network/remote/dioHelper.dart';
 import 'package:shop_app/shared/style/Theme.dart';
@@ -32,7 +33,8 @@ void main() async {
 
   bool? onBoarding = CachHelper.getData(key: 'onBoarding');
 
-  String? token = CachHelper.getData(key: 'token');
+  token = CachHelper.getData(key: 'token');
+  print(token);
 
   if(onBoarding != null){
     if(token != null ){
@@ -59,7 +61,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
 
       providers: [
-        BlocProvider( create: (BuildContext context) => ShopCubit()..getHomeData()..getCategoris(),)
+        BlocProvider( create: (BuildContext context) => ShopCubit()..getHomeData()..getCategoris()..getFav(),)
       ],
       child: BlocConsumer<ShopCubit,ShopStates>(
           listener: (context , state){},
